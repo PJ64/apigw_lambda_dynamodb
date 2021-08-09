@@ -8,6 +8,7 @@ export class ApigwLambdaDynamodbStack extends Stack {
   constructor(scope: App, id: string, ) {
     super(scope, id);
 
+    //Create DynamoDB table
     const dynamoTable = new Table(this, "DynamoDBTable",{
       partitionKey: {
         name: 'orderid',
@@ -17,6 +18,7 @@ export class ApigwLambdaDynamodbStack extends Stack {
       removalPolicy: RemovalPolicy.DESTROY
     });
 
+    //Setup IAM security for Lambda
     const lambda_service_role = new Role(this, "IamRole",{
         assumedBy: new ServicePrincipal("lambda.amazonaws.com"),
         roleName: "apigw_lambda_dynamodb"
@@ -29,6 +31,7 @@ export class ApigwLambdaDynamodbStack extends Stack {
       actions: ['dynamodb:PutItem', 'dynamodb:GetItem'],
     }));
 
+    //Create 2 Lambda function. One for read and one for writing
     const lambda_post_order = new Function(this, "PostLambdaFunction",{
       runtime: Runtime.PYTHON_3_7,
       handler: "lambda_handler.lambda_handler",
@@ -51,6 +54,7 @@ export class ApigwLambdaDynamodbStack extends Stack {
       }
     });
 
+    //Create REST Api and integrate the Lambda functions
     var api = new RestApi(this, "OrderApi",{
         restApiName: "apigw_lambda_dynamodb",
         defaultCorsPreflightOptions: {
