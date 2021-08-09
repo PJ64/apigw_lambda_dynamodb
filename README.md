@@ -2,7 +2,15 @@
 This is a basic example of provisioning an Amazon API Gateway, AWS Lambda function and an Amazon DynamoDB table using the AWS CDK and TypeScript
 
 ## Setup
-1. Since this CDK project uses ['Assests'](https://docs.aws.amazon.com/cdk/latest/guide/assets.html), you might need to run the following command to provision resources the AWS CDK needs to perform the deployment.
+
+1. You require the following prerequisities for this example
+  
+```bash
+npm install -g typescript
+npm install -g aws-cdk
+```
+
+2. Since this CDK project uses ['Assests'](https://docs.aws.amazon.com/cdk/latest/guide/assets.html), you might need to run the following command to provision resources the AWS CDK will need to perform the deployment.
 
 ```bash 
 cdk bootstrap
