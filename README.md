@@ -3,7 +3,7 @@ This is a basic example of provisioning an Amazon API Gateway, AWS Lambda functi
 
 ## Setup
 
-1. You require the following prerequisities for this example
+1. The following prerequisities are required for this example
   
 ```bash
 npm install -g typescript
@@ -34,7 +34,7 @@ cdk synth
 cdk deploy
 ```
 
-5. The API Gateway will be deployed by the stack and can be tested using the following json object
+5. The API Gateway will be deployed by the stack and can be tested using the following json object.
 
 ```bash
 {
@@ -45,4 +45,10 @@ cdk deploy
     "vendorid": 1
   }
 }
+```
+
+6. You can also test using curl , make sure you replace <api gateway> with your gateway address 
+
+```bash
+curl <api gateway>/order -d '@data.json' -H "Content-Type: application/json"
 ```
