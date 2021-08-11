@@ -2,14 +2,21 @@ import json
 import boto3
 import os
 
-def lambda_handler(event, context): 
+def lambda_handler(event, context):
     dynamodb = boto3.resource('dynamodb')
-    table = dynamodb.Table(os.environ('TABLENAME'))
+    table = dynamodb.Table(os.environ.get('TABLENAME'))
 
-    print(event)
-    # jsondata =json.loads(event["Records"][0]["body"])
-    # jsondata = json.loads(jsondata["Message"])
+    queryParam = event["queryStringParameters"]
+    
+    response = table.get_item(Key={'orderid': queryParam['orderid']})
 
-    # response = table.get_item(Key={'itemid': jsondata["orderid"]})
-
-    # return response['Item']
+    return {
+        'statusCode': 200,
+        'headers': {
+            "Content-Type": 'application/json',
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Headers": 'Content-Type,X-Amz-Date,X-Api-Key',
+            "Access-Control-Allow-Methods": "OPTIONS,POST"
+        },
+        'body': json.dumps(response["Item"])
+    }

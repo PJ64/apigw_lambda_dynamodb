@@ -42,13 +42,19 @@ cdk deploy
     "orderid": "3",
     "coffeetype": "Flat white",
     "coffeesize": "Small",
-    "vendorid": 1
+    "vendorid": "1"
   }
 }
 ```
 
 6. You can also test using curl , make sure you replace <api gateway> with your gateway address 
 
+Put item
 ```bash
 curl <api gateway>/order -d '@data.json' -H "Content-Type: application/json"
+```
+
+Get item
+```bash
+curl <api gateway>/order?orderid=3
 ```
