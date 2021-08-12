@@ -1,5 +1,5 @@
 ## Example
-This is a basic example of provisioning an Amazon API Gateway, AWS Lambda function and an Amazon DynamoDB table using the AWS CDK and TypeScript
+This is a basic example of provisioning an Amazon API Gateway, AWS Lambda function and an Amazon DynamoDB table using the AWS CDK and TypeScript. The example also demonstrates using Python to put items into Amazon DynamoDB.
 
 ## Setup
 
@@ -39,7 +39,7 @@ cdk deploy
 ```bash
 {
   "order": {
-    "orderid": "3",
+    "orderid": "1",
     "coffeetype": "Flat white",
     "coffeesize": "Small",
     "vendorid": "1"
@@ -56,5 +56,5 @@ curl <api gateway>/order -d '@data.json' -H "Content-Type: application/json"
 
 Get item
 ```bash
-curl <api gateway>/order?orderid=3
+curl <api gateway>/order?orderid=1
 ```
