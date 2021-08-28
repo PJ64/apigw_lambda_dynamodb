@@ -16,9 +16,15 @@ def lambda_handler(event, context):
         response = table.put_item(
             Item={
                 'orderid': body['order']['orderid'],
-                'coffeetype': body['order']['coffeetype'],
-                'coffeesize': body['order']["coffeesize"],
-                'vendorid': body['order']["vendorid"]
+                'accountid': body['order']['accountid'],
+                'vendorid': body['order']["vendorid"],
+                'orderdate':body['order']["orderdate"],
+                'details':{
+                    'coffeetype': body['order']['details']['coffeetype'],
+                    'coffeesize': body['order']['details']["coffeesize"],
+                    'unitprice': body['order']['details']["unitprice"],
+                    'quantity': body['order']['details']["quantity"]
+                },
             })
         logger.info("PutItem %s to table %s.",body,table)
         

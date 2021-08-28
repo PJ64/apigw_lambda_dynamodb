@@ -14,7 +14,7 @@ export class ApigwLambdaDynamodbStack extends Stack {
         name: 'orderid',
         type: AttributeType.STRING
       },
-      tableName: 'CoffeeOrder',
+      tableName: 'apigw_lambda_dynamodb',
       removalPolicy: RemovalPolicy.DESTROY
     });
 
@@ -36,10 +36,10 @@ export class ApigwLambdaDynamodbStack extends Stack {
       runtime: Runtime.PYTHON_3_7,
       handler: "lambda_handler.lambda_handler",
       code: Code.fromAsset("resources/post_order"),
-      functionName: "post_coffee_order",
+      functionName: "post_apigw_Lambda_dynamodb",
       role: lambda_service_role,
       environment: {
-        'TABLENAME': 'CoffeeOrder'
+        'TABLENAME': dynamoTable.tableName
       }
     });
 
@@ -47,10 +47,10 @@ export class ApigwLambdaDynamodbStack extends Stack {
       runtime: Runtime.PYTHON_3_7,
       handler: "lambda_handler.lambda_handler",
       code: Code.fromAsset("resources/get_order"),
-      functionName: "get_coffee_order",
+      functionName: "get_apigw_Lambda_dynamodb",
       role: lambda_service_role,
       environment: {
-        'TABLENAME': 'CoffeeOrder'
+        'TABLENAME': dynamoTable.tableName
       }
     });
 

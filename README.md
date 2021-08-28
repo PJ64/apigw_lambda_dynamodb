@@ -1,5 +1,7 @@
 ## Example
-This is a basic example of provisioning an Amazon API Gateway, AWS Lambda function and an Amazon DynamoDB table using the AWS CDK and TypeScript. The example also demonstrates using Python to put items into Amazon DynamoDB.
+This design is a very common approach for a microservice architecture. It is a example of provisioning an Amazon API Gateway, AWS Lambda function and an Amazon DynamoDB table using the AWS CDK and TypeScript. The example also demonstrates using Python to put items into Amazon DynamoDB.
+
+![architecture](./images/architecture_1.png "Architecture")
 
 ## Setup
 
@@ -9,6 +11,8 @@ This is a basic example of provisioning an Amazon API Gateway, AWS Lambda functi
 npm install -g typescript
 npm install -g aws-cdk
 ```
+
+Install Jupyter Notebook following instructions on this ['site'](https://jupyter.org/install).
 
 2. Since this CDK project uses ['Assests'](https://docs.aws.amazon.com/cdk/latest/guide/assets.html), you might need to run the following command to provision resources the AWS CDK will need to perform the deployment.
 
@@ -33,28 +37,9 @@ cdk synth
 ```bash
 cdk deploy
 ```
+5. Open the Jupyter Notebook in the **jupyter_notebook directory** follow the instructions and execute the query.
 
-5. The API Gateway will be deployed by the stack and can be tested using the following json object.
+6. Check the dynamoDB table to view the records and S3 bucket to view the invoices
 
-```bash
-{
-  "order": {
-    "orderid": "1",
-    "coffeetype": "Flat white",
-    "coffeesize": "Small",
-    "vendorid": "1"
-  }
-}
-```
-
-6. You can also test using curl , make sure you replace <api gateway> with your gateway address 
-
-Put item
-```bash
-curl <api gateway>/order -d '@data.json' -H "Content-Type: application/json"
-```
-
-Get item
-```bash
-curl <api gateway>/order?orderid=1
-```
+## Cleanup Commands
+1. Execute command: **cdk destroy**
