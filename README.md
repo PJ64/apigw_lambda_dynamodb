@@ -1,6 +1,8 @@
 ## Example
 This design is a very common approach for a microservice architecture. It is a example of provisioning an Amazon API Gateway, AWS Lambda function and an Amazon DynamoDB table using the AWS CDK and TypeScript. The example also demonstrates using Python to put items into Amazon DynamoDB.
 
+Two AWS Lambda functions are deployed behind an Amazon API Gateway. The Amazon DynamoDB table is partitioned on an accountid attribute and also includes a sort key on the vendorid attribute, together they form the primary key.
+
 ![architecture](./images/architecture_1.png "Architecture")
 
 ## Setup
@@ -37,9 +39,8 @@ cdk synth
 ```bash
 cdk deploy
 ```
-5. Open the Jupyter Notebook in the **jupyter_notebook directory** follow the instructions and execute the query.
+5. Open the Jupyter Notebook in the **jupyter_notebook directory** follow the instructions.
 
-6. Check the dynamoDB table to view the records and S3 bucket to view the invoices
 
 ## Cleanup Commands
 1. Execute command: **cdk destroy**

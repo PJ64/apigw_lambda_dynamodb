@@ -15,7 +15,6 @@ def lambda_handler(event, context):
     try:
         response = table.put_item(
             Item={
-                'orderid': body['order']['orderid'],
                 'accountid': body['order']['accountid'],
                 'vendorid': body['order']["vendorid"],
                 'orderdate':body['order']["orderdate"],

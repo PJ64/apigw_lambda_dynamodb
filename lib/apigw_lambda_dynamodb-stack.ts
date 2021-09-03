@@ -11,7 +11,11 @@ export class ApigwLambdaDynamodbStack extends Stack {
     //Create DynamoDB table
     const dynamoTable = new Table(this, "DynamoDBTable",{
       partitionKey: {
-        name: 'orderid',
+        name: 'accountid',
+        type: AttributeType.STRING
+      },
+      sortKey: {
+        name: 'vendorid',
         type: AttributeType.STRING
       },
       tableName: 'apigw_lambda_dynamodb',
@@ -36,7 +40,7 @@ export class ApigwLambdaDynamodbStack extends Stack {
       runtime: Runtime.PYTHON_3_7,
       handler: "lambda_handler.lambda_handler",
       code: Code.fromAsset("resources/post_order"),
-      functionName: "post_apigw_Lambda_dynamodb",
+      functionName: "apigw_Lambda_dynamodb_post",
       role: lambda_service_role,
       environment: {
         'TABLENAME': dynamoTable.tableName
@@ -47,7 +51,7 @@ export class ApigwLambdaDynamodbStack extends Stack {
       runtime: Runtime.PYTHON_3_7,
       handler: "lambda_handler.lambda_handler",
       code: Code.fromAsset("resources/get_order"),
-      functionName: "get_apigw_Lambda_dynamodb",
+      functionName: "apigw_Lambda_dynamodb_get",
       role: lambda_service_role,
       environment: {
         'TABLENAME': dynamoTable.tableName
