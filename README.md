@@ -1,11 +1,12 @@
 ## Example
-This design is a very common approach for a microservice architecture. It is a example of provisioning an Amazon API Gateway, AWS Lambda function and an Amazon DynamoDB table using the AWS CDK and TypeScript. The example also demonstrates using Python to put items into Amazon DynamoDB.
+This example deploys an Amazon API Gateway, AWS Lambda functions and an Amazon DynamoDB table using the AWS CDK and TypeScript. The AWS Lambda functions are deployed behind an Amazon API Gateway and execute for CRUD operations against Amazon DynamoDB. The Amazon DynamoDB table is partitioned on an accountid attribute and also includes a sort key on the vendorid attribute, together they form the primary key.
 
-Two AWS Lambda functions are deployed behind an Amazon API Gateway. The Amazon DynamoDB table is partitioned on an accountid attribute and also includes a sort key on the vendorid attribute, together they form the primary key.
 
-![architecture](./images/architecture_1.png "Architecture")
+![architecture](./images/architecture_2.png "Architecture")
 
 ## Setup
+
+[Getting started with AWS CDK](https://docs.aws.amazon.com/cdk/latest/guide/getting_started.html)
 
 1. The following prerequisities are required for this example
   

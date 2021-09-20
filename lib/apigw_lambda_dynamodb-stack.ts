@@ -22,41 +22,101 @@ export class ApigwLambdaDynamodbStack extends Stack {
       removalPolicy: RemovalPolicy.DESTROY
     });
 
-    //Setup IAM security for Lambda
-    const lambda_service_role = new Role(this, "IamRole",{
+    //Setup IAM security for Lambda functions
+    const lambda_get_service_role = new Role(this, "lambda_get_service_role",{
         assumedBy: new ServicePrincipal("lambda.amazonaws.com"),
-        roleName: "apigw_lambda_dynamodb"
+        roleName: "apigw_lambda_dynamodb_get"
     });
 
-    lambda_service_role.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName("service-role/AWSLambdaBasicExecutionRole"));
+    lambda_get_service_role.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName("service-role/AWSLambdaBasicExecutionRole"));
     
-    lambda_service_role.addToPolicy(new PolicyStatement({
+    lambda_get_service_role.addToPolicy(new PolicyStatement({
       resources: [dynamoTable.tableArn],
-      actions: ['dynamodb:PutItem', 'dynamodb:GetItem'],
+      actions: ['dynamodb:GetItem'],
     }));
 
-    //Create 2 Lambda function. One for read and one for writing
-    const lambda_post_order = new Function(this, "PostLambdaFunction",{
+    const lambda_put_service_role = new Role(this, "lambda_put_service_role",{
+      assumedBy: new ServicePrincipal("lambda.amazonaws.com"),
+      roleName: "apigw_lambda_dynamodb_put"
+    });
+
+    lambda_put_service_role.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName("service-role/AWSLambdaBasicExecutionRole"));
+    
+    lambda_put_service_role.addToPolicy(new PolicyStatement({
+      resources: [dynamoTable.tableArn],
+      actions: ['dynamodb:PutItem'],
+    }));
+
+    const lambda_delete_service_role = new Role(this, "lambda_delete_service_role",{
+      assumedBy: new ServicePrincipal("lambda.amazonaws.com"),
+      roleName: "apigw_lambda_dynamodb_delete"
+    });
+
+    lambda_delete_service_role.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName("service-role/AWSLambdaBasicExecutionRole"));
+
+    lambda_delete_service_role.addToPolicy(new PolicyStatement({
+      resources: [dynamoTable.tableArn],
+      actions: ['dynamodb:DeleteItem'],
+    }));
+
+    const lambda_update_service_role = new Role(this, "lambda_update_service_role",{
+      assumedBy: new ServicePrincipal("lambda.amazonaws.com"),
+      roleName: "apigw_lambda_dynamodb_update"
+    });
+
+    lambda_update_service_role.addManagedPolicy(ManagedPolicy.fromAwsManagedPolicyName("service-role/AWSLambdaBasicExecutionRole"));
+
+    lambda_update_service_role.addToPolicy(new PolicyStatement({
+      resources: [dynamoTable.tableArn],
+      actions: ['dynamodb:UpdateItem'],
+    }));
+
+    //Create Lambda functions for CRUD (create, read, update, delete) operations.
+  
+    const lambda_put_item = new Function(this, "lambda_put_item",{
       runtime: Runtime.PYTHON_3_7,
       handler: "lambda_handler.lambda_handler",
-      code: Code.fromAsset("resources/post_order"),
+      code: Code.fromAsset("resources/function_put_item"),
       functionName: "apigw_Lambda_dynamodb_post",
-      role: lambda_service_role,
+      role: lambda_put_service_role,
       environment: {
         'TABLENAME': dynamoTable.tableName
       }
     });
 
-    const lambda_get_order = new Function(this, "GetLambdaFunction",{
+    const lambda_get_item = new Function(this, "lambda_get_item",{
       runtime: Runtime.PYTHON_3_7,
       handler: "lambda_handler.lambda_handler",
-      code: Code.fromAsset("resources/get_order"),
+      code: Code.fromAsset("resources/function_get_item"),
       functionName: "apigw_Lambda_dynamodb_get",
-      role: lambda_service_role,
+      role: lambda_get_service_role,
       environment: {
         'TABLENAME': dynamoTable.tableName
       }
     });
+
+    const lambda_delete_item = new Function(this, "lambda_delete_item",{
+      runtime: Runtime.PYTHON_3_7,
+      handler: "lambda_handler.lambda_handler",
+      code: Code.fromAsset("resources/function_delete_item"),
+      functionName: "apigw_Lambda_dynamodb_delete",
+      role: lambda_delete_service_role,
+      environment: {
+        'TABLENAME': dynamoTable.tableName
+      }
+    });
+
+    const lambda_update_item = new Function(this, "lambda_update_item",{
+      runtime: Runtime.PYTHON_3_7,
+      handler: "lambda_handler.lambda_handler",
+      code: Code.fromAsset("resources/function_update_item"),
+      functionName: "apigw_Lambda_dynamodb_update",
+      role: lambda_update_service_role,
+      environment: {
+        'TABLENAME': dynamoTable.tableName
+      }
+    });
+
 
     //Create REST Api and integrate the Lambda functions
     var api = new RestApi(this, "OrderApi",{
@@ -66,16 +126,34 @@ export class ApigwLambdaDynamodbStack extends Stack {
           allowMethods: Cors.ALL_METHODS}
     });
 
-    var lambda_post_integration = new LambdaIntegration(lambda_post_order, {
+    //Create API lambda integrations
+    var lambda_put_integration = new LambdaIntegration(lambda_put_item, {
       requestTemplates: {
             ["application/json"]: "{ \"statusCode\": \"200\" }"
         }
     });
+    var lambda_delete_integration = new LambdaIntegration(lambda_delete_item, {
+      requestTemplates: {
+            ["application/json"]: "{ \"statusCode\": \"200\" }"
+        }
+    });
+    var lambda_update_integration = new LambdaIntegration(lambda_update_item, {
+      requestTemplates: {
+            ["application/json"]: "{ \"statusCode\": \"200\" }"
+        }
+    });
+    var lambda_get_integration = new LambdaIntegration(lambda_get_item);
 
-    var lambda_get_integration = new LambdaIntegration(lambda_get_order);
+    //Create API resources
+    var api_put_resource = api.root.addResource("putorder");
+    var api_delete_resource = api.root.addResource("deleteorder");
+    var api_update_resource = api.root.addResource("updateorder");
+    var api_get_resource = api.root.addResource("getorder");
 
-    var apiresource = api.root.addResource("order");
-    apiresource.addMethod("POST", lambda_post_integration);
-    apiresource.addMethod("GET", lambda_get_integration);
+    //Create API methods
+    api_put_resource.addMethod("POST", lambda_put_integration);
+    api_delete_resource.addMethod("POST", lambda_delete_integration);
+    api_update_resource.addMethod("POST", lambda_update_integration);
+    api_get_resource.addMethod("GET", lambda_get_integration);
   }
 }

@@ -5,7 +5,6 @@ import os
 from botocore.exceptions import ClientError
 
 logger = logging.getLogger()
-logger.setLevel(logging.INFO)
 
 dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table(os.environ.get('TABLENAME'))
@@ -13,19 +12,12 @@ table = dynamodb.Table(os.environ.get('TABLENAME'))
 def lambda_handler(event, context):
     body = json.loads(event['body'])
     try:
-        response = table.put_item(
-            Item={
+        response = table.delete_item(
+            Key={
                 'accountid': body['order']['accountid'],
-                'vendorid': body['order']["vendorid"],
-                'orderdate':body['order']["orderdate"],
-                'details':{
-                    'coffeetype': body['order']['details']['coffeetype'],
-                    'coffeesize': body['order']['details']["coffeesize"],
-                    'unitprice': body['order']['details']["unitprice"],
-                    'quantity': body['order']['details']["quantity"]
-                },
+                'vendorid': body['order']["vendorid"]
             })
-        logger.info("PutItem %s to table %s.",body,table)
+        logger.info("Deleting Item %s from table %s.",body,table)
         
         return {
             'statusCode': 200,
@@ -38,5 +30,5 @@ def lambda_handler(event, context):
         }
 
     except ClientError:
-        logger.exception("Couldn't PutItem %s to table %s",body,table)
+        logger.exception("Could not delete item %s to table %s",body,table)
         raise
