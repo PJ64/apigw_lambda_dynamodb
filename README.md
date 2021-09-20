@@ -1,5 +1,5 @@
 ## Example
-This example deploys an Amazon API Gateway, AWS Lambda functions and an Amazon DynamoDB table using the AWS CDK and TypeScript. The AWS Lambda functions are deployed behind an Amazon API Gateway and execute for CRUD operations against Amazon DynamoDB. The Amazon DynamoDB table is partitioned on an accountid attribute and also includes a sort key on the vendorid attribute, together they form the primary key.
+This example deploys an Amazon API Gateway, AWS Lambda functions and an Amazon DynamoDB table using the AWS CDK and TypeScript. The AWS Lambda functions are deployed behind an Amazon API Gateway and execute for CRUD (create, read, update, delete) operations against Amazon DynamoDB. The Amazon DynamoDB table is partitioned on an accountid attribute and also includes a sort key on the vendorid attribute, together they form the primary key. The example also demonstrates using Python to put, update, get and delete items in Amazon DynamoDB.
 
 
 ![architecture](./images/architecture_2.png "Architecture")
