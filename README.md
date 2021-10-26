@@ -7,7 +7,7 @@ The Amazon DynamoDB table is partitioned on an accountid attribute and also incl
 
 By integrating an API Gateway endpoint with AWS Lambda functions and an Amazon DynamoDB table you can build basic microservice architecture that is scalable, highly available and cost effective. This is a standard pattern for applications that require a CRUD backend.
 
-![architecture](./images/architecture_2.png "Architecture")
+![architecture](./images/architecture_1.png "Architecture")
 
 ## Setup
 
