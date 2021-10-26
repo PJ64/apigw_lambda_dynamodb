@@ -1,7 +1,7 @@
 import { Stack, App, RemovalPolicy } from '@aws-cdk/core';
 import { LambdaIntegration, RestApi , Cors} from '@aws-cdk/aws-apigateway';
 import { AttributeType, Table } from '@aws-cdk/aws-dynamodb';
-import { Runtime, Code, Function } from '@aws-cdk/aws-lambda';
+import { Runtime, Code, Function, LayerVersion } from '@aws-cdk/aws-lambda';
 import { Role, ServicePrincipal, ManagedPolicy, PolicyStatement } from '@aws-cdk/aws-iam';
 
 export class ApigwLambdaDynamodbStack extends Stack {
@@ -71,24 +71,35 @@ export class ApigwLambdaDynamodbStack extends Stack {
       actions: ['dynamodb:UpdateItem'],
     }));
 
+    //Lambda layer
+    const embeded_metricsLayer = new LayerVersion(this, 'embeded_metricsLayer', {
+      layerVersionName: 'embeded_metrics',
+      compatibleRuntimes: [
+        Runtime.PYTHON_3_7
+      ],
+      code: Code.fromAsset('resources/lambda_layer'),
+      description: 'embeded_metrics',
+    });
+
     //Create Lambda functions for CRUD (create, read, update, delete) operations.
   
     const lambda_put_item = new Function(this, "lambda_put_item",{
       runtime: Runtime.PYTHON_3_7,
-      handler: "lambda_handler.lambda_handler",
+      handler: "lambda_function.lambda_handler",
       code: Code.fromAsset("resources/function_put_item"),
-      functionName: "apigw_Lambda_dynamodb_post",
+      functionName: "apigw_Lambda_dynamodb_put_item",
       role: lambda_put_service_role,
       environment: {
         'TABLENAME': dynamoTable.tableName
-      }
+      },
+      layers: [embeded_metricsLayer]
     });
 
     const lambda_get_item = new Function(this, "lambda_get_item",{
       runtime: Runtime.PYTHON_3_7,
-      handler: "lambda_handler.lambda_handler",
+      handler: "lambda_function.lambda_handler",
       code: Code.fromAsset("resources/function_get_item"),
-      functionName: "apigw_Lambda_dynamodb_get",
+      functionName: "apigw_Lambda_dynamodb_get_item",
       role: lambda_get_service_role,
       environment: {
         'TABLENAME': dynamoTable.tableName
@@ -97,9 +108,9 @@ export class ApigwLambdaDynamodbStack extends Stack {
 
     const lambda_delete_item = new Function(this, "lambda_delete_item",{
       runtime: Runtime.PYTHON_3_7,
-      handler: "lambda_handler.lambda_handler",
+      handler: "lambda_function.lambda_handler",
       code: Code.fromAsset("resources/function_delete_item"),
-      functionName: "apigw_Lambda_dynamodb_delete",
+      functionName: "apigw_Lambda_dynamodb_delete_item",
       role: lambda_delete_service_role,
       environment: {
         'TABLENAME': dynamoTable.tableName
@@ -108,9 +119,9 @@ export class ApigwLambdaDynamodbStack extends Stack {
 
     const lambda_update_item = new Function(this, "lambda_update_item",{
       runtime: Runtime.PYTHON_3_7,
-      handler: "lambda_handler.lambda_handler",
+      handler: "lambda_function.lambda_handler",
       code: Code.fromAsset("resources/function_update_item"),
-      functionName: "apigw_Lambda_dynamodb_update",
+      functionName: "apigw_Lambda_dynamodb_update_item",
       role: lambda_update_service_role,
       environment: {
         'TABLENAME': dynamoTable.tableName
