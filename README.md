@@ -5,7 +5,7 @@ This example uses an Amazon API Gateway endpoint to allow the mobile app to add 
 
 The Amazon DynamoDB table is partitioned on an accountid attribute and also includes a sort key on the vendorid attribute, together they form the primary key. The example also demonstrates using Python to put, update, get and delete items in Amazon DynamoDB.
 
-By integrating an API Gateway Endpoint with Lambda functions and a DynamoDB table gives you a basic microservice architecture that is scalable, highly available and cost effective. This is a standard pattern for applications that require a CRUD backend.
+By integrating an API Gateway endpoint with AWS Lambda functions and an Amazon DynamoDB table you can build basic microservice architecture that is scalable, highly available and cost effective. This is a standard pattern for applications that require a CRUD backend.
 
 ![architecture](./images/architecture_2.png "Architecture")
 
