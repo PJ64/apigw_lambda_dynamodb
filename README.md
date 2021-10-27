@@ -56,3 +56,20 @@ Open the Jupyter Notebook in the **jupyter_notebook directory** follow the instr
 ## Cleanup
 From the command prompt execute the following command: **cdk destroy**
 
+## Deployed Resources
+|	Identifier	|	Service	|	Type	|
+|	:---	|	:---	|	:---	|
+|	apigw_lambda_dynamodb	|	DynamoDB	|	Table	|
+|	account/ApigwL-Order-FWxkXGJAl84t	|	ApiGateway	|	Account	|
+|	ApigwLambdaDynamodbStack-OrderApiCloudWatchRoleB19-O3GSF61CEV4Q	|	IAM	|	Role	|
+|	restapis/so9wvpacfj	|	ApiGateway	|	RestApi	|
+|	embeded_metrics	|	Lambda	|	LayerVersion	|
+|	apigw_Lambda_dynamodb_delete_item	|	Lambda	|	Function	|
+|	apigw_lambda_dynamodb_delete	|	IAM	|	Role	|
+|	apigw_Lambda_dynamodb_get_item	|	Lambda	|	Function	|
+|	apigw_lambda_dynamodb_get	|	IAM	|	Role	|
+|	apigw_Lambda_dynamodb_put_item	|	Lambda	|	Function	|
+|	apigw_lambda_dynamodb_put	|	IAM	|	Role	|
+|	apigw_Lambda_dynamodb_update_item	|	Lambda	|	Function	|
+|	apigw_lambda_dynamodb_update	|	IAM	|	Role	|
+

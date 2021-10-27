@@ -8,7 +8,9 @@ dynamodb = boto3.resource('dynamodb')
 table = dynamodb.Table(os.environ.get('TABLENAME'))
 
 def lambda_handler(event, context):
-
+    return dynamodb_get_item(event)
+    
+def dynamodb_get_item(event):
     queryParam = event["queryStringParameters"]
     
     try:
@@ -28,6 +30,7 @@ def lambda_handler(event, context):
         logger.exception("Couldn't Getitem from table %s",table)
         raise
 
+#This function is used to convert decimal to float. Decimal can not be serialised to JSON format.
 def handle_decimal_type(obj):
   if isinstance(obj, Decimal):
       if float(obj).is_integer():
