@@ -53,11 +53,3 @@ def dynamo_put_item(event,  metrics):
     except ClientError:
         logger.exception("Couldn't PutItem %s to table %s",body,table)
         raise
-
-def handle_decimal_type(obj):
-  if isinstance(obj, Decimal):
-      if float(obj).is_integer():
-         return int(obj)
-      else:
-         return float(obj)
-  raise TypeError
